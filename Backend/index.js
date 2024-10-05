@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+// require('dotenv').config();
 
 const { createTodo, updateTodo } = require("./type");
 const { todo } = require("./db");
