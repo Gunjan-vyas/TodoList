@@ -5,14 +5,12 @@ const cors = require("cors");
 
 const { createTodo, updateTodo } = require("./type");
 const { todo } = require("./db");
-
+const corsConfig = {
+  origin: "http://localhost:5173",
+  // optionsSuccessStatus: 200, // Some legacy browsers require this
+};
 app.use(express.json());
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    // optionsSuccessStatus: 200, // Some legacy browsers require this
-  })
-);
+app.use(cors());
 // title: string
 // description: string;
 app.post("/todo", async function (req, res, next) {
