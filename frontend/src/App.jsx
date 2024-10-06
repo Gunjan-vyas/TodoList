@@ -10,7 +10,7 @@ function App() {
   const [todos, setTodos] = useState();
 
   const fetchTodos = async () => {
-    fetch("http://localhost:3005/todos")
+    fetch(`${process.env.BACKEND_URL}/todos`)
       .then(async (res) => {
         console.log(res);
         return await res.json();
@@ -30,7 +30,7 @@ function App() {
     console.log(id);
     console.log({ e });
     try {
-      const response = await fetch("http://localhost:3005/completed", {
+      const response = await fetch(`${process.env.BACKEND_URL}/completed`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id }),

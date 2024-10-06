@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "../App.css";
 import Toast from "./Toast";
+import.meta.env.VITE_BASE_URL;
+
 
 export const CreateTodo = () => {
   const [newTodo, setNewTodo] = useState({ title: "", description: "" });
@@ -15,7 +17,7 @@ export const CreateTodo = () => {
     event.preventDefault(); // Prevent default form submission behavior
 
     try {
-      const response = await fetch("http://localhost:3005/todo", {
+      const response = await fetch(`${process.env.BACKEND_URL}/todo`, {
         method: "POST",
         headers: { "Content-Type": "application/json" }, // Specify JSON body
         body: JSON.stringify(newTodo), // Send the updated newTodo object
