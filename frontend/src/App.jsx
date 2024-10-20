@@ -1,60 +1,51 @@
-import { useEffect, useState } from "react";
-import "./App.css";
+import { useEffect, useState, useCallback } from "react";
 import { CreateTodo } from "./components/CreateTodo";
 import Todo from "./components/Todo";
-const mockedTodos = [
-  { title: "SomeTaskk", description: "some descriptoin1", completed: true },
-  { title: "SomeTask2", description: "some descriptoin2", completed: true },
-];
+import "./App.css";
+
 function App() {
-  const [todos, setTodos] = useState();
+  const [todos, setTodos] = useState([]);
 
-  const fetchTodos = async () => {
-    fetch(`${process.env.BACKEND_URL}/todos`)
-      .then(async (res) => {
-        console.log(res);
-        return await res.json();
-      })
-      .then((data) => {
-        setTodos(data.allTodos);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
+  const fetchTodos = useCallback(async () => {
+    try {
+      const res = await fetch(`${process.env.BACKEND_URL}/todos`);
+      const data = await res.json();
+      setTodos(data.allTodos);
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
 
-  const makeItCompleted = async (e) => {
-    let id = e.target.id;
-    // let value = e.target.value;
-    // send !value
-    console.log(id);
-    console.log({ e });
+  const makeItCompleted = useCallback(async (id) => {
     try {
       const response = await fetch(`${process.env.BACKEND_URL}/completed`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id }),
       });
-
-      const data = await response.json(id);
+      const data = await response.json();
 
       if (response.ok) {
-        console.log("Todo updated successfully:", data);
-        location.reload();
+        setTodos((prevTodos) =>
+          prevTodos.map((todo) =>
+            todo._id === id ? { ...todo, completed: true } : todo
+          )
+        );
       } else {
         console.error("Error updating todo:", data);
       }
     } catch (error) {
       console.error("Error updating todo:", error);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchTodos();
-  }, []);
+  }, [fetchTodos]);
+
   return (
     <>
-      <CreateTodo />
+      <CreateTodo onTodoCreated={fetchTodos} />
       <Todo todos={todos} makeItCompleted={makeItCompleted} />
     </>
   );

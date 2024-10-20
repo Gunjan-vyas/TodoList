@@ -1,55 +1,51 @@
 import React, { useState } from "react";
 import "../App.css";
 import Toast from "./Toast";
-import.meta.env.VITE_BASE_URL;
 
-
-export const CreateTodo = () => {
+// eslint-disable-next-line react/display-name, react/prop-types
+export const CreateTodo = React.memo(({ onTodoCreated }) => {
   const [newTodo, setNewTodo] = useState({ title: "", description: "" });
   const [toastData, setToastData] = useState({ status: "", message: "" });
+
   const handleChange = (event) => {
     const { name, value } = event.target;
-    console.log({ name, value });
     setNewTodo((prevState) => ({ ...prevState, [name]: value }));
   };
 
   const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent default form submission behavior
+    event.preventDefault();
 
     try {
       const response = await fetch(`${process.env.BACKEND_URL}/todo`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" }, // Specify JSON body
-        body: JSON.stringify(newTodo), // Send the updated newTodo object
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newTodo),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        console.log("Todo created successfully:", data);
         setToastData({ status: "success", message: data.msg });
-        setTimeout(() => {
-          setToastData(null);
-          // reloadonce to get the updated todos data
-          location.reload();
-        }, 1000);
-        // handleCreateTodo(data); // Pass the created todo data to the parent component
+        setTimeout(() => setToastData(null), 1000);
+        onTodoCreated();
+        setNewTodo({ title: "", description: "" });
       } else {
-        console.error("Error creating todo:", data);
+        setToastData({ status: "error", message: data.msg });
       }
     } catch (error) {
       console.error("Error creating todo:", error);
+      setToastData({ status: "error", message: "Failed to create todo" });
     }
   };
 
   return (
     <>
       <form onSubmit={handleSubmit} id="todoForm">
-        <input type="text" name="title" id="title" value={newTodo.title} onChange={handleChange} />
-        <input type="text" name="description" id="description" value={newTodo.description} onChange={handleChange} />
-        <button type="submit">add todo</button>
+        <input type="text" name="title" value={newTodo.title} onChange={handleChange} />
+        <input type="text" name="description" value={newTodo.description} onChange={handleChange} />
+        <button type="submit">Add Todo</button>
       </form>
       <Toast toastData={toastData} />
     </>
   );
-};
+});
