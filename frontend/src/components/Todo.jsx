@@ -4,14 +4,11 @@ import React from "react";
 const Todo = React.memo(({ todos, makeItCompleted }) => {
   return (
     <>
-      {todos?.map((todo) => (
-        <div key={todo._id}>
+      {todos?.map((todo, idx) => (
+        <div key={todo._id + idx}> 
           <h2>{todo.title}</h2>
           <p>{todo.description}</p>
-          <button
-            onClick={() => makeItCompleted(todo._id)}
-            disabled={todo.completed}
-          >
+          <button onClick={() => makeItCompleted(todo._id)} disabled={todo.completed}>
             {todo.completed ? "Completed" : "Mark as complete"}
           </button>
         </div>
