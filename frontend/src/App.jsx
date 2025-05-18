@@ -1,3 +1,4 @@
+// App.js
 import { useEffect, useState, useCallback } from "react";
 import { CreateTodo } from "./components/CreateTodo";
 import Todo from "./components/Todo";
@@ -8,10 +9,10 @@ function App() {
 
   const fetchTodos = useCallback(async () => {
     try {
-      console.log("process.env.REACT_APP_BACKEND_URL", process.env.REACT_APP_BACKEND_URL);
       const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/todos`);
       const data = await res.json();
-      setTodos(data.allTodos);
+      // Show newest todos at top
+      setTodos(data.allTodos.reverse());
     } catch (err) {
       console.error(err);
     }
@@ -41,10 +42,11 @@ function App() {
   }, [fetchTodos]);
 
   return (
-    <>
+    <div className="app-container">
+      <h1 className="app-title">📝 My Todos</h1>
       <CreateTodo onTodoCreated={fetchTodos} />
       <Todo todos={todos} makeItCompleted={makeItCompleted} />
-    </>
+    </div>
   );
 }
 

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import "../App.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FaPlus } from "react-icons/fa";
+import "../App.css";
 
-// eslint-disable-next-line react/display-name, react/prop-types
+// eslint-disable-next-line react/display-name
 export const CreateTodo = React.memo(({ onTodoCreated }) => {
   const [newTodo, setNewTodo] = useState({ title: "", description: "" });
 
@@ -14,7 +15,6 @@ export const CreateTodo = React.memo(({ onTodoCreated }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     try {
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/todo`, {
         method: "POST",
@@ -23,7 +23,6 @@ export const CreateTodo = React.memo(({ onTodoCreated }) => {
       });
 
       const data = await response.json();
-
       if (response.ok) {
         toast.success(data.msg);
         onTodoCreated();
@@ -32,17 +31,18 @@ export const CreateTodo = React.memo(({ onTodoCreated }) => {
         toast.error(data.msg);
       }
     } catch (error) {
-      console.error("Error creating todo:", error);
       toast.error("Failed to create todo");
     }
   };
 
   return (
     <>
-      <form onSubmit={handleSubmit} id="todoForm">
-        <input type="text" required name="title" value={newTodo.title} onChange={handleChange} />
-        <input type="text" required name="description" value={newTodo.description} onChange={handleChange} />
-        <button type="submit">Add Todo</button>
+      <form onSubmit={handleSubmit} className="todo-form">
+        <input type="text" required name="title" placeholder="Title" value={newTodo.title} onChange={handleChange} />
+        <input type="text" required name="description" placeholder="Description" value={newTodo.description} onChange={handleChange} />
+        <button type="submit" className="add-btn">
+          <FaPlus /> Add
+        </button>
       </form>
       <ToastContainer />
     </>
