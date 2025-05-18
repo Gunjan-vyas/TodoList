@@ -8,7 +8,8 @@ function App() {
 
   const fetchTodos = useCallback(async () => {
     try {
-      const res = await fetch(`${process.env.BACKEND_URL}/todos`);
+      console.log("process.env.REACT_APP_BACKEND_URL", process.env.REACT_APP_BACKEND_URL);
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/todos`);
       const data = await res.json();
       setTodos(data.allTodos);
     } catch (err) {
@@ -18,7 +19,7 @@ function App() {
 
   const makeItCompleted = useCallback(async (id) => {
     try {
-      const response = await fetch(`${process.env.BACKEND_URL}/completed`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/completed`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id }),
@@ -26,11 +27,7 @@ function App() {
       const data = await response.json();
 
       if (response.ok) {
-        setTodos((prevTodos) =>
-          prevTodos.map((todo) =>
-            todo._id === id ? { ...todo, completed: true } : todo
-          )
-        );
+        setTodos((prevTodos) => prevTodos.map((todo) => (todo._id === id ? { ...todo, completed: true } : todo)));
       } else {
         console.error("Error updating todo:", data);
       }

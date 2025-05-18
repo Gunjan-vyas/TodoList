@@ -16,7 +16,7 @@ export const CreateTodo = React.memo(({ onTodoCreated }) => {
     event.preventDefault();
 
     try {
-      const response = await fetch(`${process.env.BACKEND_URL}/todo`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/todo`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newTodo),
