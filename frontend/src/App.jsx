@@ -9,7 +9,9 @@ function App() {
 
   const fetchTodos = useCallback(async () => {
     try {
+      console.log("process.env.REACT_APP_BACKEND_URL", process.env.REACT_APP_BACKEND_URL);
       const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/todos`);
+      console.log("res", res);
       const data = await res.json();
       // Show newest todos at top
       setTodos(data.allTodos.reverse());
